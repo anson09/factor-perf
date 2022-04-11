@@ -1,0 +1,12 @@
+{
+  "name": "factor-monitor",
+  "author": "anson@ricequant.com",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo root test"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
