@@ -5,6 +5,25 @@ export class DB {
     serverSelectionTimeoutMS: 3000,
   };
 
+  static async init() {
+    if (
+      !process.env.DB_URI ||
+      !process.env.DB_NAME ||
+      !process.env.COLLECTION_NAME
+    ) {
+      console.error(
+        "Missing DB_URI, DB_NAME, or DB_COLLECTION environment variables! Please set these variables in .env file."
+      );
+      process.exit();
+    }
+
+    return new DB().init({
+      uri: process.env.DB_URI,
+      db: process.env.DB_NAME,
+      collection: process.env.COLLECTION_NAME,
+    });
+  }
+
   async init({ uri, db, collection, config }) {
     Object.assign(this.CONFIG, config);
     this.client = await this.connectToCluster(uri);
