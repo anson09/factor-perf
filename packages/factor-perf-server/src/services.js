@@ -7,7 +7,7 @@ const fastify = Fastify({ logger: true });
 async function start(dbClient) {
   fastify
     .register(fastifyMongodb, { client: dbClient })
-    .register(router, { prefix: "/api/factor-performance" })
+    .register(router, { prefix: "/api/factor-perf" })
     .addHook("onClose", async () => {
       await dbClient.close();
     });

@@ -1,5 +1,5 @@
 {
-  "name": "factor-performance-server",
+  "name": "factor-perf-server",
   "version": "1.0.0",
   "license": "MIT",
   "engines": {
@@ -11,7 +11,8 @@
   "scripts": {
     "test": "echo server test",
     "dev": "node src/index.js",
-    "start": "pm2 start ecosystem.config.cjs"
+    "start": "pm2 start ecosystem.config.cjs",
+    "deploy": "./ci/deploy.js"
   },
   "dependencies": {
     "dotenv": "^16.0.0",

@@ -1,5 +1,5 @@
 {
-  "name": "factor-performance-monorepo",
+  "name": "factor-perf-monorepo",
   "author": "anson@ricequant.com",
   "license": "MIT",
   "private": true,
@@ -9,7 +9,9 @@
     "node": ">=16.14.2"
   },
   "scripts": {
-    "test": "echo root test"
+    "test": "echo root test",
+    "page": "npm run -w factor-perf-page $*",
+    "server": "npm run -w factor-perf-server $*"
   },
   "workspaces": [
     "packages/*"
