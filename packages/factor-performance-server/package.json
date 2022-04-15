@@ -1,6 +1,11 @@
 {
-  "name": "server",
+  "name": "factor-performance-server",
   "version": "1.0.0",
+  "license": "MIT",
+  "engines": {
+    "npm": ">=8.5.0",
+    "node": ">=16.14.2"
+  },
   "exports": "./index.js",
   "type": "module",
   "scripts": {

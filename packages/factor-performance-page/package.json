@@ -1,5 +1,6 @@
 {
-  "name": "page",
+  "name": "factor-performance-page",
+  "license": "MIT",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

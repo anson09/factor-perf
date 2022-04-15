@@ -1,8 +1,13 @@
 {
-  "name": "factor-monitor",
+  "name": "factor-performance-monorepo",
   "author": "anson@ricequant.com",
+  "license": "MIT",
   "private": true,
   "version": "1.0.0",
+  "engines": {
+    "npm": ">=8.5.0",
+    "node": ">=16.14.2"
+  },
   "scripts": {
     "test": "echo root test"
   },

@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "factor-monitor",
+      name: "factor-performance",
       script: "./src/index.js",
       instances: "max",
       max_memory_restart: "300M",
