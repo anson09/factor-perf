@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { DB } from "./db.js";
-import { start } from "./services.js";
+import { start } from "./server.js";
 
 config();
 const dbClient = await DB.init();

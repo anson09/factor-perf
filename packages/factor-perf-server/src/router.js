@@ -1,3 +1,5 @@
+import { readFile } from "fs/promises";
+
 export default async function routes(fastify, options) {
   const dbClient = fastify.mongo.client;
 
@@ -11,5 +13,13 @@ export default async function routes(fastify, options) {
 
   fastify.get("/factors/:factor", async (request, reply) => {
     return dbClient.findDocuments({ factor_id: request.params.factor });
+  });
+
+  fastify.get("/trading-dates", async (request, reply) => {
+    return JSON.parse(
+      await readFile(
+        new URL("../assets/trading-dates@2020-2023.json", import.meta.url)
+      )
+    );
   });
 }
