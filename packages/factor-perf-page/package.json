@@ -3,7 +3,22 @@
   "license": "MIT",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=16.14.2"
+  },
   "scripts": {
     "test": "echo page test"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.1",
+    "element-plus": "^2.1.9",
+    "highcharts": "^10.0.0",
+    "ky": "^0.30.0",
+    "lodash": "^4.17.21",
+    "pinia": "^2.0.13",
+    "vue-router": "^4.0.14"
+  },
+  "devDependencies": {
+    "parcel": "^2.4.1"
   }
 }
