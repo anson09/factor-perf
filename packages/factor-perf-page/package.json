@@ -2,12 +2,16 @@
   "name": "factor-perf-page",
   "license": "MIT",
   "version": "1.0.0",
-  "main": "index.js",
+  "source": "src/index.html",
   "engines": {
     "node": ">=16.14.2"
   },
+  "browserslist": "last 2 chrome version",
   "scripts": {
-    "test": "echo page test"
+    "test": "echo page test",
+    "dev": "parcel --cache-dir .parcel-cache --public-url /factor-perf/ --lazy --no-autoinstall",
+    "build": "parcel build --cache-dir .parcel-cache --detailed-report 20",
+    "clean": "rm -rf .parcel-cache dist"
   },
   "dependencies": {
     "dayjs": "^1.11.1",
@@ -19,6 +23,8 @@
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.4.1",
+    "@parcel/transformer-vue": "^2.4.1",
     "parcel": "^2.4.1"
   }
 }
