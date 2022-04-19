@@ -2,15 +2,14 @@
   "name": "factor-perf-page",
   "license": "MIT",
   "version": "1.0.0",
-  "source": "src/index.html",
   "engines": {
     "node": ">=16.14.2"
   },
   "browserslist": "last 2 chrome version",
   "scripts": {
     "test": "echo page test",
-    "dev": "parcel --cache-dir .parcel-cache --public-url /factor-perf/ --lazy --no-autoinstall",
-    "build": "parcel build --cache-dir .parcel-cache --detailed-report 20",
+    "dev": ". ci/loadenv.sh; parcel watch ./src/index.html --public-url $PUBLIC_PATH --no-autoinstall --host localhost",
+    "build": ". ci/loadenv.sh; parcel build ./src/index.html --public-url $PUBLIC_PATH --detailed-report 20",
     "clean": "rm -rf .parcel-cache dist"
   },
   "dependencies": {
