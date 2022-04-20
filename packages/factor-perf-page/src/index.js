@@ -5,8 +5,8 @@ import "element-plus/theme-chalk/el-select-v2.css";
 
 import App from "./App.vue";
 
-__VUE_OPTIONS_API__ = false;
-__VUE_PROD_DEVTOOLS__ = false;
+globalThis.__VUE_OPTIONS_API__ = false;
+globalThis.__VUE_PROD_DEVTOOLS__ = false;
 
 const app = createApp(App);
 app.use(Select);

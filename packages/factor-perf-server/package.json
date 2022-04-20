@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "test": "echo server test",
-    "dev": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "start": "pm2 start ecosystem.config.cjs",
     "deploy": "./ci/deploy.js"
   },

@@ -1,30 +1,25 @@
 <template>
   <el-select-v2
+    class="factor-selector"
     v-model="value"
     :options="options"
-    placeholder="Filter by factor ID"
+    placeholder="Input Factor ID to Filter Results"
     size="large"
     filterable
     :height="700"
     @change="factorChange"
   />
-  <p>{{ value }}</p>
-  <div id="long-short-compose"></div>
-  <div id="layer-annual"></div>
-  <div id="ic"></div>
-  <div id="long"></div>
-  <div id="layer-accumulated"></div>
+  <div id="chart-long-short-compose"></div>
+  <div id="chart-layer-annual"></div>
+  <div id="chart-ic"></div>
+  <div id="chart-long"></div>
+  <div id="chart-layer-accumulated"></div>
 </template>
 
 <script>
 import { ref } from "vue";
 import * as api from "./api";
-import Highcharts from "highcharts/highstock";
-
-let tradingDates;
-api.getTradingDates().then((res) => {
-  tradingDates = res;
-});
+import * as chart from "./charts";
 
 export default {
   setup() {
@@ -40,7 +35,8 @@ export default {
 
     async function factorChange(id) {
       const factorPerf = await api.getFactorPerf(id);
-      console.log(factorPerf);
+
+      chart.drawIC("chart-ic", factorPerf);
     }
 
     return {
@@ -53,7 +49,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-select-v2 {
+.factor-selector {
   width: 700px;
+  margin-bottom: 20px;
 }
 </style>

@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=16.14.2"
   },
-  "browserslist": "last 2 chrome version",
+  "browserslist": "since 2022",
   "scripts": {
     "test": "echo page test",
     "dev": ". ci/loadenv.sh; parcel watch ./src/index.html --public-url $PUBLIC_PATH --no-autoinstall --host localhost",
