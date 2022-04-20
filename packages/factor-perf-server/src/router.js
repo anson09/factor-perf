@@ -21,7 +21,7 @@ export default async function routes(fastify, options) {
   fastify.get("/trading-dates", async (request, reply) => {
     return JSON.parse(
       await readFile(
-        new URL("../assets/trading-dates@2020-2023.json", import.meta.url)
+        new URL("../assets/trading-dates@2013-2023.json", import.meta.url)
       )
     );
   });
