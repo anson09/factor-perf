@@ -1,4 +1,7 @@
 import Highcharts from "highcharts/highstock";
+import darkUnica from "highcharts/themes/dark-unica";
+import gridLight from "highcharts/themes/grid-light";
+
 import { getTradingDates } from "./api";
 
 let tradingDates;
@@ -6,6 +9,7 @@ getTradingDates().then((res) => {
   tradingDates = res;
 });
 
+gridLight(Highcharts);
 Highcharts.setOptions({
   chart: {
     height: 500,
@@ -29,7 +33,7 @@ function drawIC(container, factorPerf) {
   ).map((date) => new Date(date).getTime());
 
   if (dateRange.length !== factorPerf.ic.length) {
-    console.error("date range and ic length mismatch");
+    console.error("drawIC: date range and ic length mismatch");
     return;
   }
 
@@ -89,4 +93,43 @@ function drawIC(container, factorPerf) {
   });
 }
 
-export { drawIC };
+function drawLayerAnnual(container, factorPerf) {
+  const categories = ["q1", "q2", "q3", "q4", "q5"];
+
+  const layerAnnual = categories
+    .map(
+      (category) =>
+        factorPerf[category].reduce((acc, curr) => (1 + acc) * (1 + curr) - 1) // 累积收益率
+    )
+    .map(
+      (accumulation) => (accumulation / factorPerf[categories[0]].length) * 365 // 年化
+    )
+    .map((annual) => Number(annual.toFixed(4)));
+
+  Highcharts.chart(container, {
+    chart: {
+      type: "column",
+    },
+    title: {
+      text: "分层年化收益",
+    },
+    xAxis: {
+      categories,
+    },
+    yAxis: [
+      {
+        title: {
+          text: "收益率",
+        },
+      },
+    ],
+    series: [
+      {
+        name: "年化",
+        data: layerAnnual,
+      },
+    ],
+  });
+}
+
+export { drawIC, drawLayerAnnual };

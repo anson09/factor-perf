@@ -9,10 +9,10 @@
     :height="700"
     @change="factorChange"
   />
-  <div id="chart-long-short-compose"></div>
-  <div id="chart-layer-annual"></div>
   <div id="chart-ic"></div>
   <div id="chart-long"></div>
+  <div id="chart-long-short-compose"></div>
+  <div id="chart-layer-annual"></div>
   <div id="chart-layer-accumulated"></div>
 </template>
 
@@ -36,7 +36,17 @@ export default {
     async function factorChange(id) {
       const factorPerf = await api.getFactorPerf(id);
 
+      if (
+        !["ic", "q1", "q2", "q3", "q4", "q5"].every(
+          (curr, idx, arr) =>
+            factorPerf[curr].length === factorPerf[arr[0]].length
+        )
+      ) {
+        console.error("Factor Performance Data Length Mismatch");
+      }
+
       chart.drawIC("chart-ic", factorPerf);
+      chart.drawLayerAnnual("chart-layer-annual", factorPerf);
     }
 
     return {
@@ -51,6 +61,9 @@ export default {
 <style lang="scss" scoped>
 .factor-selector {
   width: 700px;
-  margin-bottom: 20px;
+}
+
+[id^="chart-"] {
+  margin-top: 10px;
 }
 </style>
