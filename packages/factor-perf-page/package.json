@@ -9,8 +9,9 @@
   "scripts": {
     "test": "echo page test",
     "dev": ". ci/loadenv.sh; parcel watch ./src/index.html --public-url $PUBLIC_PATH --no-autoinstall --host localhost",
-    "build": ". ci/loadenv.sh; parcel build ./src/index.html --public-url $PUBLIC_PATH --detailed-report 20",
-    "clean": "rm -rf .parcel-cache dist"
+    "build": ". ci/loadenv.sh; parcel build ./src/index.html --public-url $PUBLIC_PATH --detailed-report 20 ",
+    "clean": "rm -rf .parcel-cache dist",
+    "deploy": "ci/deploy.sh"
   },
   "dependencies": {
     "dayjs": "^1.11.1",

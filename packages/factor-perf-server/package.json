@@ -11,7 +11,7 @@
     "test": "echo server test",
     "dev": "nodemon src/index.js",
     "start": "pm2 start ecosystem.config.cjs",
-    "deploy": "./ci/deploy.js"
+    "deploy": "ci/deploy.js"
   },
   "dependencies": {
     "dotenv": "^16.0.0",

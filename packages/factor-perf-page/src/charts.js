@@ -64,13 +64,13 @@ function drawIC(container, factorPerf) {
         title: {
           text: "日 IC",
         },
+        opposite: false,
       },
       {
         title: {
           text: "累积 IC",
         },
         gridLineWidth: 0,
-        opposite: false,
       },
     ],
     series: [
