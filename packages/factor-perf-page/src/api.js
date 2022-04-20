@@ -2,16 +2,16 @@ import ky from "ky";
 
 const api = ky.create({ prefixUrl: "/api/factor-perf/" });
 
-function getFactorList() {
+function getFactorsList() {
   return api.get("factors").json();
 }
 
-function getFactor(id) {
-  return api.get(`factors/${id}`).json();
+async function getFactorPerf(id) {
+  return (await api.get(`factors/${id}`).json())[0];
 }
 
 function getTradingDates() {
   return api.get("trading-dates").json();
 }
 
-export { getFactorList, getFactor, getTradingDates };
+export { getFactorsList, getFactorPerf, getTradingDates };

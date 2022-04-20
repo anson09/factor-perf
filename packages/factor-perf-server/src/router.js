@@ -12,7 +12,10 @@ export default async function routes(fastify, options) {
   });
 
   fastify.get("/factors/:factor", async (request, reply) => {
-    return dbClient.findDocuments({ factor_id: request.params.factor });
+    return dbClient.findDocuments(
+      { factor_id: request.params.factor },
+      { _id: 0 }
+    );
   });
 
   fastify.get("/trading-dates", async (request, reply) => {
