@@ -1,6 +1,9 @@
 import { MongoClient } from "mongodb";
 
 export class DB {
+  client;
+  db;
+  collection;
   CONFIG = {
     serverSelectionTimeoutMS: 3000,
   };
@@ -26,13 +29,13 @@ export class DB {
 
   async init({ uri, db, collection, config }) {
     Object.assign(this.CONFIG, config);
-    this.client = await this.connectToCluster(uri);
+    this.client = await this.#connectToCluster(uri);
     this.db = this.client.db(db);
     this.collection = this.db.collection(collection);
     return this;
   }
 
-  async connectToCluster(uri) {
+  async #connectToCluster(uri) {
     let mongoClient;
 
     try {

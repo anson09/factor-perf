@@ -10,19 +10,19 @@
     @change="factorChange"
   />
   <div id="chart-ic"></div>
-  <div id="chart-long"></div>
-  <div id="chart-long-short-compose"></div>
   <div id="chart-layer-annual"></div>
   <div id="chart-layer-accumulated"></div>
+  <div id="chart-long"></div>
 </template>
 
 <script>
 import { ref } from "vue";
 import * as api from "./api";
-import * as chart from "./charts";
+import Chart from "./components/charts";
 
 export default {
   setup() {
+    const chartPromise = Chart.init();
     const value = ref("");
     const options = ref([]);
 
@@ -34,22 +34,15 @@ export default {
     });
 
     async function factorChange(id) {
-      const factorPerf = await api.getFactorPerf(id);
+      const factorPerfData = await api.getFactorPerf(id);
+      const chart = await chartPromise;
 
-      if (
-        !["ic", "q1", "q2", "q3", "q4", "q5"].every(
-          (curr, idx, arr) =>
-            factorPerf[curr].length === factorPerf[arr[0]].length
-        )
-      ) {
-        console.error("Factor Performance Data Length Mismatch");
-      }
+      chart.setChartDate(factorPerfData);
 
-      chart.drawIC("chart-ic", factorPerf);
-      chart.drawLayerAnnual("chart-layer-annual", factorPerf);
-      chart.drawLayerAccumulated("chart-layer-accumulated", factorPerf);
-      chart.drawLong("chart-long", factorPerf);
-      chart.drawLongShortCompose("chart-long-short-compose", factorPerf);
+      chart.drawIC("chart-ic");
+      chart.drawLayerAnnual("chart-layer-annual");
+      chart.drawLayerAccumulated("chart-layer-accumulated");
+      chart.drawLong("chart-long");
     }
 
     return {
