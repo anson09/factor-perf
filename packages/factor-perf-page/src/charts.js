@@ -25,6 +25,20 @@ function sliceDates(dates, startDate, endDate) {
   return dates.slice(left, right + 1);
 }
 
+function isPositiveCorrelation(ICList) {
+  return ICList.reduce((acc, curr) => acc + curr) > 0;
+}
+
+function getAccumulated(list) {
+  const accumulation = [];
+  list.reduce((acc, curr) => {
+    acc = (1 + acc) * (1 + curr) - 1;
+    accumulation.push(acc);
+    return acc;
+  }, 0);
+  return accumulation;
+}
+
 function drawIC(container, factorPerf) {
   const dateRange = sliceDates(
     tradingDates,
@@ -132,4 +146,194 @@ function drawLayerAnnual(container, factorPerf) {
   });
 }
 
-export { drawIC, drawLayerAnnual };
+function drawLayerAccumulated(container, factorPerf) {
+  const categories = ["q1", "q2", "q3", "q4", "q5"];
+
+  const dateRange = sliceDates(
+    tradingDates,
+    factorPerf.start_date,
+    factorPerf.end_date
+  ).map((date) => new Date(date).getTime());
+
+  function composeDateRange(accumulation) {
+    return dateRange.map((date, i) => [date, accumulation[i]]);
+  }
+
+  const layerAccumulated = categories.map((category) => ({
+    name: category + "累积收益率",
+    data: composeDateRange(getAccumulated(factorPerf[category])),
+  }));
+
+  Highcharts.stockChart(container, {
+    rangeSelector: {
+      selected: -1,
+    },
+    title: {
+      text: "分层累积收益率对比",
+    },
+    yAxis: {
+      labels: {
+        formatter: function () {
+          return (this.value > 0 ? " + " : "") + this.value + "%";
+        },
+      },
+      plotLines: [
+        {
+          value: 0,
+          width: 2,
+          color: "silver",
+        },
+      ],
+    },
+
+    // plotOptions: {
+    //   series: {
+    //     compare: "value",
+    //     showInNavigator: true,
+    //   },
+    // },
+
+    // tooltip: {
+    //   pointFormat:
+    //     '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+    //   valueDecimals: 2,
+    //   split: true,
+    // },
+
+    series: layerAccumulated,
+  });
+}
+
+function drawLong(container, factorPerf) {
+  const dateRange = sliceDates(
+    tradingDates,
+    factorPerf.start_date,
+    factorPerf.end_date
+  ).map((date) => new Date(date).getTime());
+
+  const long = isPositiveCorrelation(factorPerf.ic) ? "q5" : "q1";
+
+  const columnData = dateRange.map((date, i) => [
+    date,
+    Number(factorPerf[long][i].toFixed(4)),
+  ]);
+
+  const accumulation = getAccumulated(factorPerf[long]);
+
+  const lineData = dateRange.map((date, i) => [
+    date,
+    Number(accumulation[i].toFixed(2)),
+  ]);
+
+  Highcharts.stockChart(container, {
+    rangeSelector: {
+      selected: -1,
+    },
+
+    title: {
+      text: "多头组合收益率",
+    },
+
+    yAxis: [
+      {
+        title: {
+          text: "日收益率",
+        },
+        opposite: false,
+      },
+      {
+        title: {
+          text: "累积收益率",
+        },
+        gridLineWidth: 0,
+      },
+    ],
+    series: [
+      {
+        type: "column",
+        name: "日收益率",
+        data: columnData,
+      },
+      {
+        type: "line",
+        name: "累积收益率",
+        data: lineData,
+        yAxis: 1,
+      },
+    ],
+  });
+}
+
+function drawLongShortCompose(container, factorPerf) {
+  const dateRange = sliceDates(
+    tradingDates,
+    factorPerf.start_date,
+    factorPerf.end_date
+  ).map((date) => new Date(date).getTime());
+
+  const [long, short] = isPositiveCorrelation(factorPerf.ic)
+    ? ["q5", "q1"]
+    : ["q1", "q5"];
+
+  const longShortYield = factorPerf[long].map(
+    (longYield, idx) => longYield - factorPerf[short][idx]
+  );
+
+  const columnData = dateRange.map((date, i) => [
+    date,
+    Number(longShortYield[i].toFixed(4)),
+  ]);
+
+  const accumulation = getAccumulated(longShortYield);
+
+  const lineData = dateRange.map((date, i) => [
+    date,
+    Number(accumulation[i].toFixed(2)),
+  ]);
+
+  Highcharts.stockChart(container, {
+    rangeSelector: {
+      selected: -1,
+    },
+
+    title: {
+      text: "多空组合收益率",
+    },
+
+    yAxis: [
+      {
+        title: {
+          text: "日收益率",
+        },
+        opposite: false,
+      },
+      {
+        title: {
+          text: "累积收益率",
+        },
+        gridLineWidth: 0,
+      },
+    ],
+    series: [
+      {
+        type: "column",
+        name: "日收益率",
+        data: columnData,
+      },
+      {
+        type: "line",
+        name: "累积收益率",
+        data: lineData,
+        yAxis: 1,
+      },
+    ],
+  });
+}
+
+export {
+  drawIC,
+  drawLayerAnnual,
+  drawLayerAccumulated,
+  drawLong,
+  drawLongShortCompose,
+};

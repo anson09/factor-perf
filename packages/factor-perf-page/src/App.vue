@@ -47,6 +47,9 @@ export default {
 
       chart.drawIC("chart-ic", factorPerf);
       chart.drawLayerAnnual("chart-layer-annual", factorPerf);
+      chart.drawLayerAccumulated("chart-layer-accumulated", factorPerf);
+      chart.drawLong("chart-long", factorPerf);
+      chart.drawLongShortCompose("chart-long-short-compose", factorPerf);
     }
 
     return {
