@@ -9,10 +9,12 @@
     :height="700"
     @change="factorChange"
   />
-  <div id="chart-ic"></div>
-  <div id="chart-layer-annual"></div>
-  <div id="chart-layer-accumulated"></div>
-  <div id="chart-long"></div>
+  <div class="chart-group">
+    <div id="chart-ic"></div>
+    <div id="chart-layer-annual"></div>
+    <div id="chart-layer-accumulated"></div>
+    <div id="chart-long"></div>
+  </div>
 </template>
 
 <script>
@@ -58,8 +60,7 @@ export default {
 .factor-selector {
   width: 700px;
 }
-
-[id^="chart-"] {
-  margin-top: 10px;
+.chart-group {
+  display: grid;
 }
 </style>

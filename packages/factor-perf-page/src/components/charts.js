@@ -46,10 +46,6 @@ class Chart {
     return dates.slice(left, right + 1);
   }
 
-  static isPositiveCorrelation(ICList) {
-    return ICList.reduce((acc, curr) => acc + curr) >= 0;
-  }
-
   static calcAccumulatedReturnList(list) {
     const accumulatedList = [];
     list.reduce((acc, curr) => {
@@ -120,10 +116,6 @@ class Chart {
 
     this.ICSumList = Chart.calcSumList(this.chartData.ic);
 
-    [this.short, this.long] = Chart.isPositiveCorrelation(this.chartData.ic)
-      ? ["q1", "q5"]
-      : ["q5", "q1"];
-
     this.benchmarkReturnList = Chart.calcBenchmarkList(
       ...Chart.factorReturnSeriesNames.map((name) => this.chartData[name])
     );
@@ -158,6 +150,11 @@ class Chart {
       },
       {}
     );
+
+    [this.short, this.long] = Object.entries(this.accumulatedReturnByName)
+      .sort((a, b) => a[1].annual - b[1].annual)
+      .map((item) => item[0])
+      .filter((item, idx, arr) => idx === 0 || idx === arr.length - 1);
   }
 
   drawIC(container) {
@@ -232,7 +229,7 @@ class Chart {
       yAxis: [
         {
           title: {
-            text: "收益率",
+            text: "年化收益率",
           },
           labels: {
             formatter() {
