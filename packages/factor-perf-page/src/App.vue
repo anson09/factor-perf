@@ -62,5 +62,14 @@ export default {
 }
 .chart-group {
   display: grid;
+  margin: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  @media (max-width: 2880px) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 1440px) {
+    grid-template-columns: 1fr;
+  }
+  gap: 20px;
 }
 </style>
