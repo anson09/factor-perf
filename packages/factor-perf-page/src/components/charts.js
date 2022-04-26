@@ -158,7 +158,7 @@ class Chart {
   }
 
   drawIC(container) {
-    Highcharts.stockChart(container, {
+    return Highcharts.stockChart(container, {
       title: {
         text: "日 IC 及 累计 IC 曲线",
       },
@@ -209,7 +209,7 @@ class Chart {
   }
 
   drawLayerAnnual(container) {
-    Highcharts.chart(container, {
+    return Highcharts.chart(container, {
       chart: {
         type: "column",
       },
@@ -253,9 +253,47 @@ class Chart {
   }
 
   drawLayerAccumulated(container) {
-    Highcharts.stockChart(container, {
+    const lineData = Object.keys(this.accumulatedReturnByName).map((name) => ({
+      name: name + " 超额累计收益率",
+      data: Chart.composeDateSeries(
+        this.dateRangeTimeStamp,
+        this.accumulatedReturnByName[name].excessList
+      ),
+    }));
+
+    function recaculate(event) {
+      const newStartIndex = this.dateRangeTimeStamp.findIndex(
+        (date) => date >= event.min
+      );
+
+      const netValueList = Chart.factorReturnSeriesNames.map(
+        (name) =>
+          this.accumulatedReturnByName[name].excessList[newStartIndex] + 1
+      );
+
+      const newLineData = JSON.parse(JSON.stringify(lineData));
+
+      newLineData.forEach((series, idx) => {
+        series.data.forEach((point) => {
+          point[1] = (point[1] + 1) / netValueList[idx] - 1;
+        });
+      });
+
+      chart.series.slice(0, newLineData.length).forEach((oldSeries, idx) => {
+        oldSeries.setData(newLineData[idx].data, false);
+      });
+
+      chart.redraw();
+    }
+
+    const chart = Highcharts.stockChart(container, {
       title: {
         text: "分层超额累计收益率",
+      },
+      xAxis: {
+        events: {
+          afterSetExtremes: recaculate.bind(this),
+        },
       },
       yAxis: {
         title: {
@@ -274,29 +312,20 @@ class Chart {
         pointFormatter() {
           return `<span style="color: ${this.color};">\u25CF</span> ${
             this.series.name
-          }: <b>${Highcharts.numberFormat(this.change * 100, 2)}%</b>`;
+          }: <b>${Highcharts.numberFormat(this.y * 100, 2)}%</b>`;
         },
       },
       legend: {
         enabled: true,
       },
-      plotOptions: {
-        series: {
-          compare: "value",
-        },
-      },
-      series: Object.keys(this.accumulatedReturnByName).map((name) => ({
-        name: name + " 超额累计收益率",
-        data: Chart.composeDateSeries(
-          this.dateRangeTimeStamp,
-          this.accumulatedReturnByName[name].excessList
-        ),
-      })),
+      series: lineData,
     });
+
+    return chart;
   }
 
   drawLong(container) {
-    Highcharts.stockChart(container, {
+    return Highcharts.stockChart(container, {
       title: {
         text: `${this.long} 组合收益率`,
       },
@@ -333,10 +362,7 @@ class Chart {
         pointFormatter() {
           return `<span style="color: ${this.color};">\u25CF</span> ${
             this.series.name
-          }: <b>${Highcharts.numberFormat(
-            (this.change || this.y) * 100,
-            2
-          )}%</b>`;
+          }: <b>${Highcharts.numberFormat(this.y * 100, 2)}%</b>`;
         },
       },
       legend: {
@@ -354,7 +380,6 @@ class Chart {
         {
           type: "line",
           name: "累计收益率",
-          compare: "value",
           data: Chart.composeDateSeries(
             this.dateRangeTimeStamp,
             this.accumulatedReturnByName[this.long]["list"]
