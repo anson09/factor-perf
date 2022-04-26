@@ -158,16 +158,6 @@ class Chart {
   }
 
   drawIC(container) {
-    const columnData = Chart.composeDateSeries(
-      this.dateRangeTimeStamp,
-      this.chartData.ic
-    ).map((point) => [point[0], Number(point[1].toFixed(4))]);
-
-    const lineData = Chart.composeDateSeries(
-      this.dateRangeTimeStamp,
-      this.ICSumList
-    ).map((point) => [point[0], Number(point[1].toFixed(2))]);
-
     Highcharts.stockChart(container, {
       title: {
         text: "日 IC 及 累计 IC 曲线",
@@ -188,16 +178,30 @@ class Chart {
       legend: {
         enabled: true,
       },
+      tooltip: {
+        pointFormatter() {
+          return `<span style="color: ${this.color};">\u25CF</span> ${
+            this.series.name
+          }: <b>${Highcharts.numberFormat(this.change || this.y, 2)}</b>`;
+        },
+      },
       series: [
         {
           type: "column",
           name: "日 IC",
-          data: columnData,
+          data: Chart.composeDateSeries(
+            this.dateRangeTimeStamp,
+            this.chartData.ic
+          ),
         },
         {
           type: "line",
           name: "累计 IC",
-          data: lineData,
+          compare: "value",
+          data: Chart.composeDateSeries(
+            this.dateRangeTimeStamp,
+            this.ICSumList
+          ),
           yAxis: 1,
         },
       ],
@@ -270,27 +274,17 @@ class Chart {
         pointFormatter() {
           return `<span style="color: ${this.color};">\u25CF</span> ${
             this.series.name
-          }: <b>${Highcharts.numberFormat(this.y * 100, 2)}%</b>`;
+          }: <b>${Highcharts.numberFormat(this.change * 100, 2)}%</b>`;
         },
       },
       legend: {
         enabled: true,
       },
-
-      // plotOptions: {
-      //   series: {
-      //     compare: "value",
-      //     showInNavigator: true,
-      //   },
-      // },
-
-      // tooltip: {
-      //   pointFormat:
-      //     '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
-      //   valueDecimals: 2,
-      //   split: true,
-      // },
-
+      plotOptions: {
+        series: {
+          compare: "value",
+        },
+      },
       series: Object.keys(this.accumulatedReturnByName).map((name) => ({
         name: name + " 超额累计收益率",
         data: Chart.composeDateSeries(
@@ -339,7 +333,10 @@ class Chart {
         pointFormatter() {
           return `<span style="color: ${this.color};">\u25CF</span> ${
             this.series.name
-          }: <b>${Highcharts.numberFormat(this.y * 100, 2)}%</b>`;
+          }: <b>${Highcharts.numberFormat(
+            (this.change || this.y) * 100,
+            2
+          )}%</b>`;
         },
       },
       legend: {
@@ -357,6 +354,7 @@ class Chart {
         {
           type: "line",
           name: "累计收益率",
+          compare: "value",
           data: Chart.composeDateSeries(
             this.dateRangeTimeStamp,
             this.accumulatedReturnByName[this.long]["list"]

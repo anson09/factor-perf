@@ -40,7 +40,7 @@ export default {
       const chart = await chartPromise;
 
       chart.setChartDate(factorPerfData);
-
+      console.log("chart data:", chart);
       chart.drawIC("chart-ic");
       chart.drawLayerAnnual("chart-layer-annual");
       chart.drawLayerAccumulated("chart-layer-accumulated");
