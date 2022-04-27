@@ -3,6 +3,8 @@ import { getTradingDates } from "../api";
 
 class Chart {
   static tradingDates;
+  // 每个因子对 A 股全市场每只股票每天计算出一个值称作 Xi, 全部股票根据这个值 Xi 从低到高排序后等分为五组, 分别命名为 q1-q5,
+  // 分组内的股票每天根据以上逻辑更新, q1-q5 各自的序列中储存的值是该分组内的全部股票从 startDate 到 endDate 的时间序列上每个交易日的一篮子平均收益率
   static factorReturnSeriesNames = ["q1", "q2", "q3", "q4", "q5"];
   chartData;
   dateRange;
@@ -46,6 +48,7 @@ class Chart {
     return dates.slice(left, right + 1);
   }
 
+  // 累计收益率是第 0 天 0, 第 1 天累计收益率=第 1 天收益率, 第 2 天累计收益率=(1 + 第 1 天累计收益率) * (1 + 第 2 天收益率) - 1, 以此类推
   static calcAccumulatedReturnList(list) {
     const accumulatedList = [];
     list.reduce((acc, curr) => {
@@ -56,6 +59,7 @@ class Chart {
     return accumulatedList;
   }
 
+  // 年化收益率是先用累计计算到最后一天的收益率 / 累计天数 * 365
   static calcAnnualReturn(total, length) {
     return (total / length) * 365;
   }
@@ -70,6 +74,7 @@ class Chart {
     return sumList;
   }
 
+  // q1 加到 q5 取均值组成一个 benchmark 序列(全市场)
   static calcBenchmarkList(...lists) {
     const averageList = [];
     const kinds = lists.length;
@@ -83,6 +88,7 @@ class Chart {
     return averageList;
   }
 
+  // q1 至 q5 分别减去 benchmark 得到各自的超额收益率序列
   static calcexcessEarningList(sourceList, benchmarkList) {
     const excessEarningList = [];
     for (let i = 0; i < sourceList.length; i++) {
@@ -114,6 +120,8 @@ class Chart {
       new Date(date).getTime()
     );
 
+    // IC 一个点表示这一天里, 每个股票组成的收益率序列和每个股票组成的 Xi 值序列的相关性
+    // IC 累计值是每个点相加
     this.ICSumList = Chart.calcSumList(this.chartData.ic);
 
     this.benchmarkReturnList = Chart.calcBenchmarkList(
@@ -262,6 +270,8 @@ class Chart {
     }));
 
     function recaculate(event) {
+      console.time("recaculating time");
+
       const newStartIndex = this.dateRangeTimeStamp.findIndex(
         (date) => date >= event.min
       );
@@ -275,6 +285,7 @@ class Chart {
 
       newLineData.forEach((series, idx) => {
         series.data.forEach((point) => {
+          // 整个序列的原始净值除以新起点净值后得到新净值序列, 新起点净值为1,收益率为0
           point[1] = (point[1] + 1) / netValueList[idx] - 1;
         });
       });
@@ -282,6 +293,8 @@ class Chart {
       chart.series.slice(0, newLineData.length).forEach((oldSeries, idx) => {
         oldSeries.setData(newLineData[idx].data, false);
       });
+
+      console.timeEnd("recaculating time");
 
       chart.redraw();
     }
