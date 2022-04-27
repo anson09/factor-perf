@@ -1,6 +1,6 @@
 import Highcharts from "../lib/highcharts";
 import { getTradingDates } from "../api";
-
+import { Storage } from "../util";
 class Chart {
   static tradingDates;
   // 每个因子对 A 股全市场每只股票每天计算出一个值称作 Xi, 全部股票根据这个值 Xi 从低到高排序后等分为五组, 分别命名为 q1-q5,
@@ -17,7 +17,11 @@ class Chart {
   ICSumList;
 
   static async init() {
-    if (!this.tradingDates) this.tradingDates = await getTradingDates();
+    this.tradingDates = Storage.get("trading_dates");
+    if (!this.tradingDates) {
+      this.tradingDates = await getTradingDates();
+      Storage.set("trading_dates", this.tradingDates);
+    }
     return new Chart();
   }
 
@@ -45,6 +49,10 @@ class Chart {
   static sliceDates(dates, startDate, endDate) {
     const left = dates.findIndex((date) => date >= startDate);
     const right = dates.findLastIndex((date) => date <= endDate);
+    if (left === -1 || right === -1) {
+      Storage.delete("trading_dates");
+      return [];
+    }
     return dates.slice(left, right + 1);
   }
 
