@@ -5,7 +5,9 @@
   "engines": {
     "node": ">=16.14.2"
   },
-  "exports": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
   "type": "module",
   "scripts": {
     "test": "echo server test",

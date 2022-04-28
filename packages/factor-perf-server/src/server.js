@@ -4,12 +4,18 @@ import router from "./router.js";
 
 const fastify = Fastify({ logger: true });
 
-async function start(dbClient) {
+async function start(dbClients) {
+  dbClients.forEach((dbClient) => {
+    fastify.register(fastifyMongodb, {
+      client: dbClient.instance,
+      name: dbClient.name,
+    });
+  });
+
   fastify
-    .register(fastifyMongodb, { client: dbClient })
     .register(router, { prefix: "/api/factor-perf" })
     .addHook("onClose", async () => {
-      await dbClient.close();
+      await Promise.all(dbClients.map((dbClient) => dbClient.instance.close()));
     });
 
   try {

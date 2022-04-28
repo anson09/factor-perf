@@ -8,11 +8,11 @@ export class DB {
     serverSelectionTimeoutMS: 3000,
   };
 
-  static async init() {
+  static async init(NS) {
     if (
-      !process.env.DB_URI ||
-      !process.env.DB_NAME ||
-      !process.env.COLLECTION_NAME
+      !process.env[`${NS}_DB_URI`] ||
+      !process.env[`${NS}_DB_NAME`] ||
+      !process.env[`${NS}_COLLECTION_NAME`]
     ) {
       console.error(
         "Missing DB_URI, DB_NAME, or DB_COLLECTION environment variables! Please set these variables in .env file."
@@ -21,34 +21,34 @@ export class DB {
     }
 
     return new DB().init({
-      uri: process.env.DB_URI,
-      db: process.env.DB_NAME,
-      collection: process.env.COLLECTION_NAME,
+      uri: process.env[`${NS}_DB_URI`],
+      db: process.env[`${NS}_DB_NAME`],
+      collection: process.env[`${NS}_COLLECTION_NAME`],
+      ns: NS,
     });
   }
 
-  async init({ uri, db, collection, config }) {
+  async init({ uri, db, collection, config, ns }) {
     Object.assign(this.CONFIG, config);
-    this.client = await this.#connectToCluster(uri);
+    this.client = await this.#connectToCluster(uri, ns);
     this.db = this.client.db(db);
     this.collection = this.db.collection(collection);
     return this;
   }
 
-  async #connectToCluster(uri) {
+  async #connectToCluster(uri, ns = "") {
     let mongoClient;
 
     try {
-      console.time("connectToClusterUse");
+      console.time(`Connect to ${ns} DB use`);
       mongoClient = new MongoClient(uri, this.CONFIG);
-      console.log("Connecting to MongoDB cluster...");
+      console.log(`Connecting to MongoDB ${ns} Cluster...`);
       await mongoClient.connect();
-      console.log("Successfully connected to MongoDB !");
-      console.timeEnd("connectToClusterUse");
+      console.timeEnd(`Connect to ${ns} DB use`);
 
       return mongoClient;
     } catch (error) {
-      console.error("Connection to MongoDB failed!", error);
+      console.error(`Connection to MongoDB ${ns} failed!`, error);
       process.exit();
     }
   }

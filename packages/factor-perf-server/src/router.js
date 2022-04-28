@@ -1,10 +1,11 @@
 import { readFile } from "fs/promises";
 
 export default async function routes(fastify, options) {
-  const dbClient = fastify.mongo.client;
+  const riceDBClient = fastify.mongo.RICE.client;
+  const barraDBClient = fastify.mongo.BARRA.client;
 
   fastify.get("/factors", async (request, reply) => {
-    const documents = await dbClient.findDocuments(
+    const documents = await riceDBClient.findDocuments(
       {},
       { _id: 0, factor_id: 1 }
     );
@@ -12,17 +13,15 @@ export default async function routes(fastify, options) {
   });
 
   fastify.get("/factors/:factor", async (request, reply) => {
-    return dbClient.findDocuments(
+    return riceDBClient.findDocuments(
       { factor_id: request.params.factor },
       { _id: 0 }
     );
   });
 
   fastify.get("/trading-dates", async (request, reply) => {
-    return JSON.parse(
-      await readFile(
-        new URL("../assets/trading-dates@2013-2023.json", import.meta.url)
-      )
+    return readFile(
+      new URL("../assets/trading-dates@2013-2023.json", import.meta.url)
     );
   });
 }
