@@ -58,7 +58,7 @@ export class DB {
     return rsp.insertedId.toString();
   }
 
-  async findDocuments(fields, projection) {
+  async findDocuments(fields, projection = {}) {
     return this.collection.find(fields).project(projection).toArray();
   }
 
@@ -72,6 +72,10 @@ export class DB {
   async deleteDocuments(fields) {
     const rsp = await this.collection.deleteMany(fields);
     return rsp.deletedCount;
+  }
+
+  async distinct(field, query = {}) {
+    return this.collection.distinct(field, query);
   }
 
   async close() {
