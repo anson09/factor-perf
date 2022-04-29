@@ -28,7 +28,7 @@ export default {
     const value = ref("");
     const options = ref([]);
 
-    api.getFactorsList().then((rsp) => {
+    api.getFactorsList("rice").then((rsp) => {
       options.value = rsp.map((item) => ({
         value: item,
         label: item,
@@ -36,7 +36,7 @@ export default {
     });
 
     async function factorChange(id) {
-      const factorPerfData = await api.getFactorPerf(id);
+      const factorPerfData = await api.getFactorPerf(id, "rice");
       const chart = await chartPromise;
 
       chart.setChartDate(factorPerfData);

@@ -25,16 +25,18 @@ export default async function routes(fastify, options) {
 
   /*
 @params <string> factor
-@query [rice|barra] type
+@query <Enum <rice|barra>> type
 @query <Date> start_date, when type is barra
 */
   fastify.get("/factors/:factor", async (request, reply) => {
     switch (request.query.type) {
       case "rice":
-        return riceDBClient.findDocuments(
-          { factor_id: request.params.factor },
-          { _id: 0 }
-        );
+        return (
+          await riceDBClient.findDocuments(
+            { factor_id: request.params.factor },
+            { _id: 0 }
+          )
+        )[0];
       case "barra":
         const default_start_date = new Date("2013-01-01");
         const user_start_date = new Date(request.query.start_date);
