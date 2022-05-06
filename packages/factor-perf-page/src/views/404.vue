@@ -1,10 +1,12 @@
 <template>
-  <router-view></router-view>
+  <div>404</div>
 </template>
 
 <script>
 export default {
-  setup() {},
+  setup() {
+    return {};
+  },
 };
 </script>
 
