@@ -20,9 +20,10 @@
 <script>
 import { ref } from "vue";
 import * as api from "../api";
-import Chart from "../components/charts";
+import Chart from "../components/RiceChart";
 
 export default {
+  name: "Rice",
   setup() {
     const chartPromise = Chart.init();
     const value = ref("");

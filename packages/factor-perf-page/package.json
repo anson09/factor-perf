@@ -23,8 +23,8 @@
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.4.1",
-    "@parcel/transformer-vue": "^2.4.1",
-    "parcel": "^2.4.1"
+    "@parcel/transformer-sass": "^2.5.0",
+    "@parcel/transformer-vue": "^2.5.0",
+    "parcel": "^2.5.0"
   }
 }

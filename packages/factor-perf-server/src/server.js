@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import fastifyMongodb from "fastify-mongodb";
+import fastifyMongodb from "@fastify/mongodb";
 import router from "./router.js";
 
 const fastify = Fastify({ logger: true });
