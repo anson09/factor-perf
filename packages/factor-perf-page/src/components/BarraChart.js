@@ -109,6 +109,9 @@ class BarraChart extends BaseChart {
     }
 
     const instance = Highcharts.stockChart(container, {
+      chart: {
+        height: 780,
+      },
       title: {
         text: "Barra 因子累计收益率",
       },

@@ -1,10 +1,10 @@
 <template>
+  <span>选择基准 - </span>
   <el-select-v2
     class="benchmark-selector"
     v-model="value"
     :options="options"
     placeholder="Select Benchmark"
-    size="large"
     @change="benchmarkChange"
   />
   <div id="chart-barra"></div>
@@ -61,4 +61,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+span {
+  line-height: 32px;
+  vertical-align: bottom;
+}
+</style>
