@@ -2,13 +2,13 @@ import Highcharts from "../lib/highcharts";
 import BaseChart from "./BaseChart";
 
 class BarraChart extends BaseChart {
-  chartData;
-  benchmark;
   static benchmarkList = [
     { value: "whole_market", label: "全市场" },
     { value: "csi_300", label: "中证300" },
     { value: "csi_500", label: "中证500" },
   ];
+  chartData;
+  benchmark;
   seriesByBenchmark = {};
 
   constructor(chartData, benchmark) {
@@ -80,8 +80,6 @@ class BarraChart extends BaseChart {
     const lineData = this.seriesByBenchmark[this.benchmark];
 
     function recaculate(event) {
-      console.time("recaculating time");
-
       const newStartIndex = lineData[0].data.findIndex(
         (point) => point[0] >= event.min
       );
@@ -90,22 +88,7 @@ class BarraChart extends BaseChart {
         (series) => series.data[newStartIndex][1] + 1
       );
 
-      const newLineData = JSON.parse(JSON.stringify(lineData));
-
-      newLineData.forEach((series, idx) => {
-        series.data.forEach((point) => {
-          // 整个序列的原始净值除以新起点净值后得到新净值序列, 新起点净值为1,收益率为0
-          point[1] = (point[1] + 1) / netValueList[idx] - 1;
-        });
-      });
-
-      instance.series.slice(0, newLineData.length).forEach((oldSeries, idx) => {
-        oldSeries.setData(newLineData[idx].data, false);
-      });
-
-      console.timeEnd("recaculating time");
-
-      instance.redraw();
+      this.reAccumulateAndDraw(lineData, netValueList, instance);
     }
 
     const instance = Highcharts.stockChart(container, {
@@ -125,20 +108,11 @@ class BarraChart extends BaseChart {
           text: "累计收益率",
         },
         labels: {
-          formatter: function () {
-            return `${this.value > 0 ? " + " : ""}${Highcharts.numberFormat(
-              this.value * 100,
-              0
-            )}%`;
-          },
+          formatter: this.HighchartsCommonHelper.labelFormatter,
         },
       },
       tooltip: {
-        pointFormatter() {
-          return `<span style="color: ${this.color};">\u25CF</span> ${
-            this.series.name
-          }: <b>${Highcharts.numberFormat(this.y * 100, 2)}%</b>`;
-        },
+        pointFormatter: this.HighchartsCommonHelper.tooltipPointFormatter,
       },
       legend: {
         enabled: true,
